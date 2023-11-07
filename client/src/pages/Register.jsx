@@ -33,13 +33,17 @@ function Register() {
       data.append("file", element);
       data.append("upload_preset", process.env.REACT_APP_CLOUDINARY_PRESET);
       data.append("cloud_name", process.env.REACT_APP_CLOUDINARY_CLOUD_NAME);
-      fetch(process.env.REACT_APP_CLOUDINARY_BASE_URL, {
+      await fetch(process.env.REACT_APP_CLOUDINARY_BASE_URL, {
         method: "POST",
         body: data,
       })
         .then((res) => res.json())
-        .then((data) => setFile(data.url.toString()));
-      setLoading(false);
+        .then((data) => setFile(data.url.toString()))
+        .catch((error) => {
+          setLoading(false);
+          toast.error("Error uploading image. Please try again.");
+          console.error("Image upload error:", error);
+        });
     } else {
       setLoading(false);
       toast.error("Please select an image in jpeg or png format");
@@ -83,7 +87,7 @@ function Register() {
         }
       );
       return navigate("/login");
-    } catch (error) {}
+    } catch (error) { }
   };
 
   return (
